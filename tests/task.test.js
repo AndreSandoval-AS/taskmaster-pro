@@ -32,6 +32,7 @@ describe("Task API", () => {
 
     expect(response.status).toBe(201);
     expect(response.body.success).toBe(true);
+    expect(response.body.message).toBe("Task created successfully");
     expect(response.body.data.title).toBe("Prepare quarterly report");
     expect(response.body.data.status).toBe("pending");
   });
@@ -66,6 +67,7 @@ describe("Task API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
+    expect(response.body.message).toBe("Tasks retrieved successfully");
     expect(response.body.data).toHaveLength(2);
   });
 
@@ -80,6 +82,7 @@ describe("Task API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
+    expect(response.body.message).toBe("Tasks retrieved successfully");
     expect(response.body.data).toHaveLength(1);
     expect(response.body.data[0].status).toBe("completed");
   });
@@ -100,6 +103,7 @@ describe("Task API", () => {
 
     const successResponse = await request(app).get(`/tasks/${taskId}`);
     expect(successResponse.status).toBe(200);
+    expect(successResponse.body.message).toBe("Task retrieved successfully");
     expect(successResponse.body.data.id).toBe(taskId);
 
     const notFoundResponse = await request(app).get("/tasks/9999");
@@ -127,6 +131,7 @@ describe("Task API", () => {
     });
 
     expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Task updated successfully");
     expect(response.body.data.title).toBe("New title");
     expect(response.body.data.status).toBe("completed");
   });
@@ -137,7 +142,11 @@ describe("Task API", () => {
 
     const deleteResponse = await request(app).delete(`/tasks/${taskId}`);
     expect(deleteResponse.status).toBe(200);
-    expect(deleteResponse.body.success).toBe(true);
+    expect(deleteResponse.body).toEqual({
+      success: true,
+      message: "Task deleted successfully",
+      data: null,
+    });
 
     const getResponse = await request(app).get(`/tasks/${taskId}`);
     expect(getResponse.status).toBe(404);
