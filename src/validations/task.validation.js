@@ -30,8 +30,8 @@ const filterTasksSchema = z
   .strict();
 
 module.exports = {
-  createTaskSchema,
-  updateTaskSchema,
-  taskIdSchema,
-  filterTasksSchema,
+  validateCreateTask: (payload) => createTaskSchema.parse(payload),
+  validateUpdateTask: (payload) => updateTaskSchema.parse(payload),
+  validateTaskId: (idParam) => taskIdSchema.parse(idParam),
+  validateTaskFilters: (query) => filterTasksSchema.parse(query),
 };

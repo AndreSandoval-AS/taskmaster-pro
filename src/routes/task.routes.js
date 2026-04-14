@@ -1,12 +1,13 @@
 const express = require("express");
 const taskController = require("../controllers/task.controller");
+const asyncHandler = require("../utils/asyncHandler");
 
 const router = express.Router();
 
-router.post("/", (req, res, next) => taskController.createTask(req, res, next));
-router.get("/", (req, res, next) => taskController.getTasks(req, res, next));
-router.get("/:id", (req, res, next) => taskController.getTaskById(req, res, next));
-router.put("/:id", (req, res, next) => taskController.updateTask(req, res, next));
-router.delete("/:id", (req, res, next) => taskController.deleteTask(req, res, next));
+router.post("/", asyncHandler(taskController.createTask));
+router.get("/", asyncHandler(taskController.getTasks));
+router.get("/:id", asyncHandler(taskController.getTaskById));
+router.put("/:id", asyncHandler(taskController.updateTask));
+router.delete("/:id", asyncHandler(taskController.deleteTask));
 
 module.exports = router;
