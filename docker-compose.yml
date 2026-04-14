@@ -1,0 +1,18 @@
+services:
+  taskmaster-pro:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskmaster-pro-api
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: file:./prisma/dev.db
+    volumes:
+      - taskmaster_sqlite_data:/app/prisma
+    restart: unless-stopped
+
+volumes:
+  taskmaster_sqlite_data:

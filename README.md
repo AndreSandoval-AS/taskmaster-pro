@@ -77,6 +77,28 @@ The API runs on `http://localhost:3000` by default.
 npm test
 ```
 
+## Run with Docker
+
+Build and run locally with Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Run in detached mode:
+
+```bash
+docker compose up --build -d
+```
+
+Stop containers:
+
+```bash
+docker compose down
+```
+
+The API will be available at `http://localhost:3000`.
+
 ## API Endpoints
 
 ### Create Task
