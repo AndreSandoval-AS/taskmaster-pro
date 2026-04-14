@@ -1,0 +1,13 @@
+You are working on TaskMaster Pro backend MVP.
+
+Coding standards:
+- Keep architecture layered: routes -> controllers -> services -> repositories.
+- Keep controllers thin and business logic in services.
+- Access Prisma only in repository layer.
+- Validate external input with Zod.
+- Use async/await and avoid callback style.
+- Keep error responses in this format:
+  {
+    "success": false,
+    "message": "Error message"
+  }
