@@ -45,6 +45,19 @@ describe("Task API", () => {
     expect(response.body.success).toBe(false);
   });
 
+  it("returns validation error for invalid task status", async () => {
+    const response = await request(app).post("/tasks").send({
+      title: "Bad status",
+      status: "in_progress",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      success: false,
+      message: "Status must be either pending or completed",
+    });
+  });
+
   it("gets all tasks", async () => {
     await request(app).post("/tasks").send({ title: "Task one" });
     await request(app).post("/tasks").send({ title: "Task two" });
@@ -71,6 +84,16 @@ describe("Task API", () => {
     expect(response.body.data[0].status).toBe("completed");
   });
 
+  it("returns validation error for invalid filter query", async () => {
+    const response = await request(app).get("/tasks?status=done");
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      success: false,
+      message: "Status must be either pending or completed",
+    });
+  });
+
   it("gets a task by id and returns not found when missing", async () => {
     const createResponse = await request(app).post("/tasks").send({ title: "Find me" });
     const taskId = createResponse.body.data.id;
@@ -82,6 +105,16 @@ describe("Task API", () => {
     const notFoundResponse = await request(app).get("/tasks/9999");
     expect(notFoundResponse.status).toBe(404);
     expect(notFoundResponse.body.success).toBe(false);
+  });
+
+  it("returns validation error for non-numeric task id", async () => {
+    const response = await request(app).get("/tasks/abc");
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      success: false,
+      message: "Task id must be a positive integer",
+    });
   });
 
   it("updates a task", async () => {
@@ -108,5 +141,18 @@ describe("Task API", () => {
 
     const getResponse = await request(app).get(`/tasks/${taskId}`);
     expect(getResponse.status).toBe(404);
+  });
+
+  it("returns bad request for malformed JSON body", async () => {
+    const response = await request(app)
+      .post("/tasks")
+      .set("Content-Type", "application/json")
+      .send("{\"title\":\"Broken JSON\"");
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      success: false,
+      message: "Malformed JSON request body",
+    });
   });
 });

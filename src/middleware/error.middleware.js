@@ -1,11 +1,23 @@
 const { ZodError } = require("zod");
 const ApiError = require("../utils/apiError");
 
+function buildValidationMessage(error) {
+  const firstIssue = error.issues?.[0];
+  return firstIssue?.message || "Validation failed";
+}
+
 function errorMiddleware(error, req, res, next) {
+  if (error instanceof SyntaxError && error.type === "entity.parse.failed") {
+    return res.status(400).json({
+      success: false,
+      message: "Malformed JSON request body",
+    });
+  }
+
   if (error instanceof ZodError) {
     return res.status(400).json({
       success: false,
-      message: error.issues[0]?.message || "Validation failed",
+      message: buildValidationMessage(error),
     });
   }
 
